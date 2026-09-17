@@ -9,10 +9,10 @@ Assessment submission for the Quality Assurance Engineering Intern role at Simpl
 
 | File | Description |
 |---|---|
-| `index.html` | Full submission: assumptions, state model, flowchart with error handling, test cases |
+| `index.html` | Full submission: assumptions, state transition model, transition table, flowchart with error handling, test cases |
 | `Aziz-Ghaus-QA-Assessment.pdf` | Same document as a PDF |
-| `flow.svg` | The flowchart on its own |
-| `flow.py` | Script that generates the flowchart SVG |
+| `state.svg` / `state.py` | State transition diagram and the script that generates it |
+| `flow.svg` / `flow.py` | Process flowchart and the script that generates it |
 
 ## Summary
 
@@ -31,6 +31,12 @@ Three decisions shape the design and the tests:
 An idempotency key prevents a retry or a double click from creating a second quotation or
 double credits (TC-10, TC-18, TC-19).
 
-26 test cases cover every state transition exactly once, plus six business-rule cases.
+The feature is modelled as a state machine using the four elements of state transition testing:
+**states**, **transitions**, **events** and **actions**. 21 transitions (T01-T21) are listed in a
+State / Event / Action / Next-state table, and 27 test cases cover each transition exactly once
+plus six business rules (R1-R6), with every case traceable to the transition or rule it verifies.
+
+T07 (valid input -> validation error) is one transition reached by six different invalid inputs,
+so it is written as a single data-driven case rather than six near-identical ones.
 
 Syed Muhammad Aziz Ghaus · azizghaus14@gmail.com

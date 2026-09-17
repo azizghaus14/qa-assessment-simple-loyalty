@@ -1,45 +1,170 @@
-<!doctype html><html><head><meta charset="utf-8"><title>QA Engineering Intern Assessment - SMS Credit Reload - Syed Muhammad Aziz Ghaus</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
-@page{size:A4;margin:14mm}
+<!doctype html><html><head><meta charset="utf-8">
+<title>QA Engineering Intern Assessment - SMS Credit Reload - Syed Muhammad Aziz Ghaus</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><style>
+@page{size:A4;margin:13mm}
 body{font:14px/1.55 Helvetica,Arial,sans-serif;color:#111;background:#fafafa;margin:0}
-.wrap{max-width:1000px;margin:0 auto;padding:28px 22px 60px;background:#fff}
-@media print{.wrap{max-width:none;padding:0}body{font-size:11.5px;background:#fff}}
-h1{font-size:19px;margin:0 0 2px} h2{font-size:14px;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}
-.sub{color:#555;margin-bottom:10px}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 22px 60px;background:#fff}
+h1{font-size:21px;margin:0 0 2px} h2{font-size:15px;margin:22px 0 7px;border-bottom:1px solid #ccc;padding-bottom:3px}
+.sub{color:#555;margin-bottom:12px}
 table{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
-@media print{table{font-size:9.5px}}
-th,td{border:1px solid #bbb;padding:4px 5px;vertical-align:top;text-align:left}
-th{background:#f0f0f0}
-ul{margin:4px 0 4px 16px;padding:0} li{margin-bottom:3px}
-.page{page-break-before:always}
+th,td{border:1px solid #bbb;padding:4px 6px;vertical-align:top;text-align:left;word-wrap:break-word}
+th{background:#f0f0f0} ul{margin:4px 0 4px 17px;padding:0} li{margin-bottom:4px}
+svg{width:100%;height:auto;display:block;margin:6px auto}
+.note{background:#f6ffed;border-left:3px solid #389e0d;padding:7px 10px;margin:8px 0;font-size:12.5px}
+@media print{body{font-size:11px;background:#fff}.wrap{max-width:none;padding:0}table{font-size:9px}
+.page{page-break-before:always} svg.tall{height:238mm;width:auto}}
 @media screen{.page{display:none}}
-svg{width:100%;height:auto;display:block;margin:0 auto}
-@media print{svg{height:242mm;width:auto}}
 </style></head><body><div class="wrap">
 <h1>Quality Assurance Engineering Intern &ndash; Assessment</h1>
-<div class="sub">SMS Credit Reload Feature (MikeTango / GoSMS) &middot; Syed Muhammad Aziz Ghaus &middot; azizghaus14@gmail.com &middot; +60 17-414 7089</div>
+<div class="sub">SMS Credit Reload feature (MikeTango / GoSMS) &middot; Syed Muhammad Aziz Ghaus &middot; azizghaus14@gmail.com &middot; +60 17-414 7089</div>
 
 <h2>1. Assumptions</h2>
 <ul>
-<li>SMS credits are held per <b>company (billing entity)</b>, not per brand. A brand may span several companies, so one submission can produce charges to more than one billing entity.</li>
-<li>The commit point is the <b>quotation</b>: credits are only added once QuickBooks confirms the quotation was generated.</li>
-<li>Emailing the quotation is treated as a <b>separate, non-blocking step</b>. If the email fails, the quotation and the credits stay valid and the email is retried, because reversing credits that the client has already been charged for would be worse than a delayed email.</li>
-<li>Crediting across several companies happens in a <b>single atomic transaction</b>, so a partial top-up can never occur.</li>
-<li>Each submission carries an <b>idempotency key</b> so a retry or double click cannot create a second quotation or double credits.</li>
+<li>SMS credits belong to a <b>company (billing entity)</b>, not to a brand. One brand can span several companies, so a single submission may bill more than one entity.</li>
+<li>The <b>quotation is the commit point</b>: credits are added only once QuickBooks confirms the quotation was generated.</li>
+<li>Sending the quotation email is a <b>separate, non-blocking step</b>. If it fails, the quotation and credits stay valid and the email is retried, because reversing credits the client has already been quoted for is the worse outcome.</li>
+<li>Crediting several companies happens in <b>one atomic transaction</b>, so a partial top-up cannot occur.</li>
+<li>Each submission carries an <b>idempotency key</b>, so a retry or double click cannot produce a second quotation or double credits.</li>
 </ul>
 
-<h2>2. State model</h2>
-<table><tr><th style="width:70px">State</th><th>Meaning</th></tr><tr><td>S0</td><td>Page open, no brand selected</td></tr>
-<tr><td>S1</td><td>Brand selected, outlets loaded</td></tr>
-<tr><td>S2</td><td>Valid top-up amounts entered</td></tr>
-<tr><td>S3</td><td>Submitting (quotation request in flight)</td></tr>
-<tr><td>S4</td><td>Quotation generated</td></tr>
-<tr><td>S5</td><td>Credits committed</td></tr>
-<tr><td>S6</td><td>Complete (emailed, audit logged, success screen)</td></tr>
-<tr><td>E1&ndash;E7</td><td>Error states, one per failure point in the flowchart</td></tr></table>
+<h2>2. State transition model</h2>
+<p style="margin:2px 0 6px">Following the four elements of state transition testing: <b>states</b> (the circles), <b>transitions</b> (the arrows), <b>events</b> (what triggers a transition) and <b>actions</b> (what the system does in response, including the message shown). Arrows are numbered; the event and action for each are listed in the transition table below.</p>
+<svg viewBox="0 0 1150 1500" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+<defs><marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#333"/></marker></defs>
+<path d="M200.0,122.0 L200.0,181.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="145.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T01</text>
+<path d="M262.0,60.0 L691.0,60.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5" y="54.0" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T02</text>
+<path d="M698.0,60.0 Q373.5,60.0 269.0,60.0" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.5" y="60.0" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T03</text>
+<path d="M258.7126794195351,79.92037337448514 L694.6584696782593,227.83055221226655" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.6855745488972" y="147.87546279337585" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T04</text>
+<path d="M701.2873205804649,230.07962662551486 Q373.3144254511028,156.12453720662415 265.3415303217407,82.16944778773345" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.3144254511028" y="156.12453720662415" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T05</text>
+<path d="M200.0,312.0 L200.0,371.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="335.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T06</text>
+<path d="M258.7126794195351,269.9203733744851 L694.6584696782593,417.8305522122665" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.6855745488972" y="337.87546279337585" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T07</text>
+<path d="M698.0,440.0 Q373.5,440.0 269.0,440.0" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.5" y="440.0" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T08</text>
+<path d="M259.02577079968637,458.9725691856135 L694.3100292713168,598.8853665514947" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.6679000355016" y="522.9289678685541" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T09</text>
+<path d="M200.0,502.0 L200.0,581.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="535.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T10</text>
+<path d="M260.83742687230745,661.9502088499175 L692.293831384045,746.700574021866" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5656291281762" y="698.3253914358918" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T11</text>
+<path d="M699.3762503272006,772.9908035013142 Q373.422308449271,819.266648189442 267.4683665713413,865.5424928775698" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.422308449271" y="819.266648189442" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T12</text>
+<path d="M200.0,712.0 L200.0,811.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="755.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T13</text>
+<path d="M261.5212283562474,887.690153544531 L691.5328265067569,941.4416033133447" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5270274315021" y="908.5658784289378" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T14</text>
+<path d="M200.0,942.0 L200.0,1021.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="975.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T15</text>
+<path d="M261.5212283562474,1097.6901535445309 L691.5328265067569,1151.4416033133446" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5270274315021" y="1118.5658784289376" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T16</text>
+<path d="M699.8511649909894,1175.0372087522526 Q373.39549875050864,1229.1511253123726 266.9398325100279,1283.265041872493" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.39549875050864" y="1229.1511253123726" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T17</text>
+<path d="M200.0,1152.0 L200.0,1231.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="1185.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T18</text>
+<path d="M138,440 C50,440 50,60 138,60" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="72" y="250.0" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T21</text>
+<path d="M220,598 C320,610 320,690 220,702" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="312" y="654" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T19</text>
+<path d="M220,598 C350,580 350,720 220,702" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="342" y="654" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T20</text>
+<circle cx="200" cy="60" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="50" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S0</text>
+<text x="200" y="64" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Idle</text>
+<text x="200" y="78" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">(page open)</text>
+<circle cx="760" cy="60" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="50" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E1</text>
+<text x="760" y="64" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Brand list</text>
+<text x="760" y="78" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">error</text>
+<circle cx="200" cy="250" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="240" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S1</text>
+<text x="200" y="254" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Outlets</text>
+<text x="200" y="268" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">loaded</text>
+<circle cx="760" cy="250" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="240" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E2</text>
+<text x="760" y="254" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">No outlets</text>
+<text x="760" y="268" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">under brand</text>
+<circle cx="200" cy="440" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="430" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S2</text>
+<text x="200" y="444" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Valid input</text>
+<text x="200" y="458" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">entered</text>
+<circle cx="760" cy="440" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="430" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E3</text>
+<text x="760" y="444" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Validation</text>
+<text x="760" y="458" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">error</text>
+<circle cx="200" cy="650" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="640" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S3</text>
+<text x="200" y="654" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Submitting</text>
+<text x="200" y="668" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">(quotation)</text>
+<circle cx="760" cy="620" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="610" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E4</text>
+<text x="760" y="624" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Billing email</text>
+<text x="760" y="638" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">missing</text>
+<circle cx="760" cy="760" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="750" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E5</text>
+<text x="760" y="764" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Quotation</text>
+<text x="760" y="778" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">failed</text>
+<circle cx="200" cy="880" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="870" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S4</text>
+<text x="200" y="884" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Quotation</text>
+<text x="200" y="898" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">created</text>
+<circle cx="760" cy="950" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="940" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E6</text>
+<text x="760" y="954" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Credit write</text>
+<text x="760" y="968" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">failed</text>
+<circle cx="200" cy="1090" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="1080" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S5</text>
+<text x="200" y="1094" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Credits</text>
+<text x="200" y="1108" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">committed</text>
+<circle cx="760" cy="1160" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="1150" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E7</text>
+<text x="760" y="1164" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Email</text>
+<text x="760" y="1178" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">failed</text>
+<circle cx="200" cy="1300" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="1297" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S6</text>
+<text x="200" y="1311" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Complete</text>
+</svg>
+<h2>3. Transition table</h2>
+<table><tr><th style="width:40px">ID</th><th style="width:52px">From</th><th style="width:210px">Event</th><th>Action (system response / message)</th><th style="width:52px">To</th></tr>
+<tr><td><b>T01</b></td><td>S0</td><td>Select a brand that has outlets</td><td>Show outlet list with company (billing entity) and current balance</td><td><b>S1</b></td></tr>
+<tr><td><b>T02</b></td><td>S0</td><td>Open page, brand list fails to load</td><td>ERR-01 "Unable to load brands. Please try again." + Retry</td><td><b>E1</b></td></tr>
+<tr><td><b>T03</b></td><td>E1</td><td>Retry after service restored</td><td>Brand list displayed</td><td><b>S0</b></td></tr>
+<tr><td><b>T04</b></td><td>S0</td><td>Select a brand with no outlets</td><td>ERR-02 "No outlets found under this brand."</td><td><b>E2</b></td></tr>
+<tr><td><b>T05</b></td><td>E2</td><td>Return to brand selection</td><td>Selection cleared</td><td><b>S0</b></td></tr>
+<tr><td><b>T06</b></td><td>S1</td><td>Enter valid top-up amounts</td><td>NEXT enabled</td><td><b>S2</b></td></tr>
+<tr><td><b>T07</b></td><td>S1</td><td>Enter invalid amount</td><td>ERR-03 inline message; entered values kept</td><td><b>E3</b></td></tr>
+<tr><td><b>T08</b></td><td>E3</td><td>Correct the input</td><td>Error cleared, NEXT enabled</td><td><b>S2</b></td></tr>
+<tr><td><b>T09</b></td><td>S2</td><td>Click NEXT with missing/invalid billing email</td><td>ERR-04 naming the company; no quotation, no credits</td><td><b>E4</b></td></tr>
+<tr><td><b>T10</b></td><td>S2</td><td>Click NEXT with all data valid</td><td>Button locked, idempotency key created</td><td><b>S3</b></td></tr>
+<tr><td><b>T11</b></td><td>S3</td><td>QuickBooks error or timeout</td><td>ERR-05 "No credits have been added." + Retry</td><td><b>E5</b></td></tr>
+<tr><td><b>T12</b></td><td>E5</td><td>Retry with the same idempotency key</td><td>Exactly one quotation created</td><td><b>S4</b></td></tr>
+<tr><td><b>T13</b></td><td>S3</td><td>Quotation generated</td><td>Quotation number issued, line item per company</td><td><b>S4</b></td></tr>
+<tr><td><b>T14</b></td><td>S4</td><td>Credit transaction fails</td><td>ERR-06, transaction rolled back, quotation voided/flagged, finance alerted</td><td><b>E6</b></td></tr>
+<tr><td><b>T15</b></td><td>S4</td><td>Credits committed atomically</td><td>balance = balance + top-up, per company</td><td><b>S5</b></td></tr>
+<tr><td><b>T16</b></td><td>S5</td><td>Quotation email fails to send</td><td>WARN-01; credits and quotation remain valid; Resend offered</td><td><b>E7</b></td></tr>
+<tr><td><b>T17</b></td><td>E7</td><td>Resend (manual or queued)</td><td>Email delivered; credits not applied again</td><td><b>S6</b></td></tr>
+<tr><td><b>T18</b></td><td>S5</td><td>Quotation email sent</td><td>Audit log written; success screen shown</td><td><b>S6</b></td></tr>
+<tr><td><b>T19</b></td><td>S3</td><td>Second submit (double click)</td><td>Blocked by idempotency key; no duplicate quotation or credits</td><td><b>S3</b></td></tr>
+<tr><td><b>T20</b></td><td>S3</td><td>Session expires mid-submission</td><td>Re-authentication prompt; flow resumes once, single credit</td><td><b>S3</b></td></tr>
+<tr><td><b>T21</b></td><td>S2</td><td>Cancel or navigate away</td><td>All input discarded; no quotation, no credits, no audit entry</td><td><b>S0</b></td></tr></table>
+<div class="note"><b>Coverage:</b> every transition above is exercised by exactly one test case, and no transition is tested twice. T07 is a single transition triggered by six different invalid inputs, so it is written as one data-driven case (TC-07) rather than six near-identical cases.<br>T01&rarr;TC-01 T02&rarr;TC-02 T03&rarr;TC-03 T04&rarr;TC-04 T05&rarr;TC-05 T06&rarr;TC-06 T07&rarr;TC-07 T08&rarr;TC-08 T09&rarr;TC-09 T10&rarr;TC-10 T11&rarr;TC-11 T12&rarr;TC-12 T13&rarr;TC-13 T14&rarr;TC-14 T15&rarr;TC-15 T16&rarr;TC-16 T17&rarr;TC-17 T18&rarr;TC-18 T19&rarr;TC-19 T20&rarr;TC-20 T21&rarr;TC-21</div>
 
 <div class="page"></div>
-<h2>3. Flowchart (including error handling and messages)</h2>
-<svg viewBox="0 0 1120 1880" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+<h2>4. Business rules (traceability)</h2>
+<table><tr><th style="width:40px">ID</th><th>Rule</th></tr><tr><td>R1</td><td>SMS credits are charged and credited to the company (billing entity), never to the brand as a whole</td></tr>
+<tr><td>R2</td><td>A single submission may cover outlets belonging to different companies</td></tr>
+<tr><td>R3</td><td>Only outlets with a top-up entered are quoted and credited</td></tr>
+<tr><td>R4</td><td>Quotation line totals, tax and grand total match the system calculation to 2 decimal places</td></tr>
+<tr><td>R5</td><td>A top-up increments the existing balance rather than replacing it</td></tr>
+<tr><td>R6</td><td>Every successful top-up is recorded in the audit log</td></tr></table>
+
+<h2>5. Flowchart (including error handling and messages)</h2>
+<div><svg class="tall" viewBox="0 0 1120 1880" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
 <defs><marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#333"/></marker></defs>
 <path d="M330,92 L330,140" stroke="#333" fill="none" marker-end="url(#a)"/>
 <path d="M330,186 L330,240" stroke="#333" fill="none" marker-end="url(#a)"/>
@@ -158,45 +283,45 @@ svg{width:100%;height:auto;display:block;margin:0 auto}
 <rect x="170.0" y="1810" width="320" height="52" rx="6" fill="#e6f4ff" stroke="#0958d9"/>
 <text x="330" y="1832.5" font-size="12" text-anchor="middle" fill="#111">END: Success screen with quotation no.</text>
 <text x="330" y="1847.5" font-size="12" text-anchor="middle" fill="#111">and updated balance per company</text>
-</svg>
+</svg></div>
 
 <div class="page"></div>
-<h2>4. Test cases</h2>
-<p style="margin:0 0 6px">Every state transition in the flowchart is covered exactly once. TC-06 covers a single transition (valid &rarr; validation error) and is written data-driven rather than repeated as six near-identical cases. TC-21 to TC-26 cover business rules that the state machine alone does not express.</p>
+<h2>6. Test cases</h2>
+<p style="margin:0 0 6px">Each case is traceable to a transition (T) or business rule (R), and states its own preconditions and data so it can be repeated by anyone.</p>
 <table>
-<tr><th style="width:34px">ID</th><th style="width:32px">Tr.</th><th style="width:96px">Title</th><th style="width:108px">Precondition</th><th style="width:108px">Steps</th><th>Expected result</th><th style="width:52px">Type</th></tr>
-<tr><td>TC-01</td><td>T01</td><td>Select a brand that has outlets</td><td>Brand list loaded; brand 'SilverTree' has 3 outlets across 2 companies</td><td>Select 'SilverTree'</td><td>Outlet list shows all 3 outlets with outlet name, company (billing entity) and current SMS balance</td><td>Positive</td></tr>
-<tr><td>TC-02</td><td>T02</td><td>Brand list fails to load</td><td>Database/API for brand list unavailable</td><td>Open the Top-Up page</td><td>ERR-01 shown with Retry. No brand list, no further action possible. Nothing written to any account</td><td>Negative</td></tr>
-<tr><td>TC-03</td><td>T03</td><td>Retry after brand list failure</td><td>ERR-01 displayed; service restored</td><td>Click Retry</td><td>Brand list loads; page returns to brand selection state</td><td>Recovery</td></tr>
-<tr><td>TC-04</td><td>T04</td><td>Brand with no outlets</td><td>Brand 'EmptyBrand' exists with 0 active outlets</td><td>Select 'EmptyBrand'</td><td>ERR-02 shown. Next is disabled. User returned to brand selection</td><td>Negative</td></tr>
-<tr><td>TC-05</td><td>T05</td><td>Enter valid top-up quantities</td><td>Outlets displayed</td><td>Enter 500 for outlet A, 1000 for outlet B, leave outlet C blank</td><td>Values accepted, no validation errors, Next becomes enabled</td><td>Positive</td></tr>
-<tr><td>TC-06</td><td>T06</td><td>Invalid top-up input (data-driven, one transition)</td><td>Outlets displayed</td><td>Enter each in turn: 0 / -50 / 1.5 / abc / blank on every outlet / 100001 (above max)</td><td>ERR-03 inline message for the matching rule; Next stays disabled; previously entered valid values are preserved</td><td>Negative</td></tr>
-<tr><td>TC-07</td><td>T07</td><td>Missing or invalid billing email</td><td>Outlet B's company has no billing email in the database</td><td>Enter valid amounts, click Next</td><td>ERR-04 naming the company. No quotation generated, no credits added</td><td>Negative</td></tr>
-<tr><td>TC-08</td><td>T08</td><td>Submit valid top-up</td><td>Valid amounts entered, all billing emails valid</td><td>Click Next</td><td>Button disables, idempotency key created, quotation request sent to QuickBooks</td><td>Positive</td></tr>
-<tr><td>TC-09</td><td>T09</td><td>QuickBooks unavailable or times out</td><td>Submission in progress; QuickBooks API returns error/timeout</td><td>Click Next</td><td>ERR-05 shown. No quotation exists, NO credits added to any company. Retry offered</td><td>Negative</td></tr>
-<tr><td>TC-10</td><td>T10</td><td>Retry after QuickBooks failure</td><td>ERR-05 displayed; QuickBooks restored</td><td>Click Retry</td><td>Exactly ONE quotation is created (same idempotency key). No duplicate quotation, no double credit</td><td>Recovery</td></tr>
-<tr><td>TC-11</td><td>T11</td><td>Quotation generated successfully</td><td>Valid submission, QuickBooks healthy</td><td>Click Next</td><td>Quotation created with one line item per company, amounts matching the entered top-ups</td><td>Positive</td></tr>
-<tr><td>TC-12</td><td>T12</td><td>Credit write fails after quotation created</td><td>Quotation created; credit transaction fails mid-way</td><td>Complete submission</td><td>ERR-06 shown. Transaction rolled back so NO company is partially credited. Quotation voided or flagged and finance alerted</td><td>Negative</td></tr>
-<tr><td>TC-13</td><td>T13</td><td>Credits committed per company</td><td>Quotation created successfully</td><td>Complete submission</td><td>Each company's balance increases by its own amount only. Balances of other companies under the same brand are unchanged</td><td>Positive</td></tr>
-<tr><td>TC-14</td><td>T14</td><td>Quotation email fails to send</td><td>Credits committed; mail service down</td><td>Complete submission</td><td>WARN-01 shown. Credits REMAIN valid, quotation remains valid, Resend option offered and retry queued</td><td>Negative</td></tr>
-<tr><td>TC-15</td><td>T15</td><td>Resend quotation email</td><td>WARN-01 displayed; mail service restored</td><td>Click Resend</td><td>Email delivered to the company's billing address. Credits are not applied a second time</td><td>Recovery</td></tr>
-<tr><td>TC-16</td><td>T16</td><td>Full happy path to success screen</td><td>All services healthy</td><td>Complete the full flow</td><td>Quotation emailed, credits applied, audit log written, success screen shows quotation number and updated balance per company</td><td>Positive</td></tr>
-<tr><td>TC-17</td><td>T17</td><td>Cancel or navigate away mid-flow</td><td>Amounts entered but Next not clicked</td><td>Navigate away / cancel</td><td>No quotation, no credits, no audit entry. Returning to the page starts a clean flow</td><td>Negative</td></tr>
-<tr><td>TC-18</td><td>T18</td><td>Double submission prevented</td><td>Valid amounts entered</td><td>Click Next twice rapidly</td><td>Only one quotation and one credit transaction. Button disabled after first click; idempotency key blocks the duplicate</td><td>Negative</td></tr>
-<tr><td>TC-19</td><td>T19</td><td>Session expires during submission</td><td>Submission in progress, session token expires</td><td>Complete submission</td><td>User is asked to re-authenticate. After login, exactly one quotation and one set of credits exist</td><td>Negative</td></tr>
-<tr><td>TC-20</td><td>T20</td><td>Concurrent top-up on the same company</td><td>Two finance executives top up the same company at the same time</td><td>Both submit 500</td><td>Final balance = original + 500 + 500. Neither write is lost (row-level lock / atomic increment)</td><td>Negative</td></tr>
-<tr><td>TC-21</td><td>B1</td><td>Credits are company-scoped, not brand-scoped</td><td>Brand has outlets under Company X and Company Y</td><td>Top up only an outlet belonging to Company X</td><td>Only Company X's balance changes. Company Y is untouched. Quotation is billed to Company X only</td><td>Business rule</td></tr>
-<tr><td>TC-22</td><td>B2</td><td>Multiple companies in one submission</td><td>Brand has outlets under Company X and Company Y</td><td>Top up 500 for X's outlet and 800 for Y's outlet</td><td>Two separate quotations or two clearly separated line items per billing entity, each emailed to its own company billing address; X +500, Y +800</td><td>Business rule</td></tr>
-<tr><td>TC-23</td><td>B3</td><td>Partial fill of outlet list</td><td>Brand has 3 outlets</td><td>Fill only outlet A, leave B and C blank</td><td>Only outlet A's company is quoted and credited. B and C are excluded entirely from the quotation</td><td>Business rule</td></tr>
-<tr><td>TC-24</td><td>B4</td><td>Quotation totals and rounding</td><td>Top-up values that produce a fractional tax amount</td><td>Submit</td><td>Line totals, tax and grand total on the quotation match the system calculation to 2 decimal places, with no rounding drift</td><td>Business rule</td></tr>
-<tr><td>TC-25</td><td>B5</td><td>Balance is incremented, not overwritten</td><td>Company X has 2,000 existing credits</td><td>Top up 500</td><td>Balance becomes 2,500, not 500</td><td>Business rule</td></tr>
-<tr><td>TC-26</td><td>B6</td><td>Audit trail completeness</td><td>Successful top-up</td><td>Complete the flow, then open the audit log</td><td>Entry records user, brand, each company, each amount, quotation number and timestamp</td><td>Business rule</td></tr>
-</table>
+<tr><th style="width:38px">ID</th><th style="width:34px">Ref</th><th style="width:104px">Title</th><th style="width:116px">Precondition</th><th style="width:116px">Steps</th><th>Expected result</th><th style="width:52px">Type</th></tr>
+<tr><td>TC-01</td><td>T01</td><td>Select a brand that has outlets</td><td>Brand 'SilverTree' has 3 outlets across 2 companies</td><td>Select 'SilverTree'</td><td>Outlet list shows all 3 outlets with outlet name, company and current SMS balance</td><td>Positive</td></tr>
+<tr><td>TC-02</td><td>T02</td><td>Brand list fails to load</td><td>Brand list service unavailable</td><td>Open the Top-Up page</td><td>ERR-01 shown with Retry. No data written anywhere</td><td>Negative</td></tr>
+<tr><td>TC-03</td><td>T03</td><td>Recover from brand list failure</td><td>ERR-01 displayed; service restored</td><td>Click Retry</td><td>Brand list loads; back in S0</td><td>Recovery</td></tr>
+<tr><td>TC-04</td><td>T04</td><td>Brand with no outlets</td><td>Brand 'EmptyBrand' has 0 active outlets</td><td>Select 'EmptyBrand'</td><td>ERR-02 shown; NEXT unavailable</td><td>Negative</td></tr>
+<tr><td>TC-05</td><td>T05</td><td>Return from the no-outlet state</td><td>ERR-02 displayed</td><td>Choose another brand</td><td>Selection cleared and the new brand's outlets load</td><td>Recovery</td></tr>
+<tr><td>TC-06</td><td>T06</td><td>Enter valid top-up quantities</td><td>Outlets displayed</td><td>Enter 500 for outlet A, 1000 for outlet B, leave C blank</td><td>Values accepted; NEXT enabled</td><td>Positive</td></tr>
+<tr><td>TC-07</td><td>T07</td><td>Invalid input (data-driven, single transition)</td><td>Outlets displayed</td><td>Enter in turn: 0 / -50 / 1.5 / abc / all blank / 100001</td><td>Matching ERR-03 message each time; NEXT stays disabled; valid values preserved</td><td>Negative</td></tr>
+<tr><td>TC-08</td><td>T08</td><td>Correct an invalid input</td><td>ERR-03 displayed</td><td>Replace the invalid value with 500</td><td>Error clears; NEXT enabled</td><td>Recovery</td></tr>
+<tr><td>TC-09</td><td>T09</td><td>Missing billing email</td><td>Outlet B's company has no billing email</td><td>Enter valid amounts, click NEXT</td><td>ERR-04 naming the company; no quotation, no credits</td><td>Negative</td></tr>
+<tr><td>TC-10</td><td>T10</td><td>Submit a valid top-up</td><td>Valid amounts; all billing emails present</td><td>Click NEXT</td><td>Button locks; idempotency key created; quotation requested</td><td>Positive</td></tr>
+<tr><td>TC-11</td><td>T11</td><td>QuickBooks unavailable</td><td>QuickBooks returns error/timeout</td><td>Click NEXT</td><td>ERR-05 shown; no quotation; no credits on any company</td><td>Negative</td></tr>
+<tr><td>TC-12</td><td>T12</td><td>Retry after QuickBooks failure</td><td>ERR-05 displayed; QuickBooks restored</td><td>Click Retry</td><td>Exactly one quotation exists; credits applied once</td><td>Recovery</td></tr>
+<tr><td>TC-13</td><td>T13</td><td>Quotation generated</td><td>Valid submission; QuickBooks healthy</td><td>Click NEXT</td><td>Quotation created with one line item per company matching the entered amounts</td><td>Positive</td></tr>
+<tr><td>TC-14</td><td>T14</td><td>Credit write fails after quotation</td><td>Quotation created; credit transaction fails mid-way</td><td>Complete submission</td><td>ERR-06; no company partially credited; quotation voided/flagged; finance alerted</td><td>Negative</td></tr>
+<tr><td>TC-15</td><td>T15</td><td>Credits committed per company</td><td>Quotation created successfully</td><td>Complete submission</td><td>Each company's balance rises by its own amount; other companies unchanged</td><td>Positive</td></tr>
+<tr><td>TC-16</td><td>T16</td><td>Quotation email fails</td><td>Credits committed; mail service down</td><td>Complete submission</td><td>WARN-01; credits and quotation remain valid; Resend offered</td><td>Negative</td></tr>
+<tr><td>TC-17</td><td>T17</td><td>Resend the quotation email</td><td>WARN-01 displayed; mail service restored</td><td>Click Resend</td><td>Email delivered; credits not applied a second time</td><td>Recovery</td></tr>
+<tr><td>TC-18</td><td>T18</td><td>Full happy path</td><td>All services healthy</td><td>Complete the flow</td><td>Email sent, audit log written, success screen shows quotation number and updated balances</td><td>Positive</td></tr>
+<tr><td>TC-19</td><td>T19</td><td>Double submission</td><td>Valid amounts entered</td><td>Click NEXT twice rapidly</td><td>One quotation and one credit transaction only</td><td>Negative</td></tr>
+<tr><td>TC-20</td><td>T20</td><td>Session expires during submission</td><td>Submission in flight; token expires</td><td>Complete submission</td><td>Re-authentication prompt; afterwards exactly one quotation and one set of credits</td><td>Negative</td></tr>
+<tr><td>TC-21</td><td>T21</td><td>Cancel mid-flow</td><td>Amounts entered, NEXT not clicked</td><td>Navigate away, then return</td><td>No quotation, no credits, no audit entry; clean form</td><td>Negative</td></tr>
+<tr><td>TC-22</td><td>R1</td><td>Credits are company-scoped</td><td>Brand spans Company X and Company Y</td><td>Top up an outlet belonging to Company X only</td><td>Only Company X is credited and billed; Company Y untouched</td><td>Business rule</td></tr>
+<tr><td>TC-23</td><td>R2</td><td>Several companies in one submission</td><td>Brand spans Company X and Company Y</td><td>Top up 500 for X's outlet and 800 for Y's outlet</td><td>Charges separated per billing entity, each emailed to its own address; X +500, Y +800</td><td>Business rule</td></tr>
+<tr><td>TC-24</td><td>R3</td><td>Partial fill of the outlet list</td><td>Brand has 3 outlets</td><td>Fill outlet A only</td><td>Only A's company is quoted and credited; B and C excluded entirely</td><td>Business rule</td></tr>
+<tr><td>TC-25</td><td>R4</td><td>Quotation totals and rounding</td><td>Amounts producing a fractional tax value</td><td>Submit</td><td>Line totals, tax and grand total match to 2 decimal places with no rounding drift</td><td>Business rule</td></tr>
+<tr><td>TC-26</td><td>R5</td><td>Balance is incremented, not overwritten</td><td>Company X holds 2,000 credits</td><td>Top up 500</td><td>Balance becomes 2,500</td><td>Business rule</td></tr>
+<tr><td>TC-27</td><td>R6</td><td>Audit trail completeness</td><td>Successful top-up</td><td>Complete flow, open audit log</td><td>Entry records user, brand, companies, amounts, quotation number and timestamp</td><td>Business rule</td></tr></table>
 
-<h2>5. Highest-risk areas</h2>
+<h2>7. Highest-risk areas</h2>
 <ul>
-<li><b>Money and credits out of step (TC-09, TC-10, TC-12, TC-18, TC-19).</b> The costly failure is a client being charged without credits, or credited twice. Idempotency and the atomic transaction are what prevent it.</li>
-<li><b>Crediting the wrong entity (TC-21, TC-22, TC-23).</b> The brand-to-company split is the trickiest rule in the feature, so it needs its own tests.</li>
-<li><b>Silent partial success (TC-12, TC-14).</b> The user must always be told exactly which of quotation, credits and email succeeded.</li>
+<li><b>Money and credits out of step</b> (TC-11, TC-12, TC-14, TC-19, TC-20). The expensive failure is a client billed without credits, or credited twice. The idempotency key and the atomic transaction are what prevent it.</li>
+<li><b>Crediting the wrong entity</b> (TC-22, TC-23, TC-24). The brand-to-company split is the subtlest rule in the feature, so it gets dedicated tests.</li>
+<li><b>Silent partial success</b> (TC-14, TC-16). The user must always be told exactly which of quotation, credits and email succeeded.</li>
 </ul>
 </div></body></html>

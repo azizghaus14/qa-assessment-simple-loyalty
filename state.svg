@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1150 1500" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
+<defs><marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#333"/></marker></defs>
+<path d="M200.0,122.0 L200.0,181.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="145.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T01</text>
+<path d="M262.0,60.0 L691.0,60.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5" y="54.0" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T02</text>
+<path d="M698.0,60.0 Q373.5,60.0 269.0,60.0" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.5" y="60.0" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T03</text>
+<path d="M258.7126794195351,79.92037337448514 L694.6584696782593,227.83055221226655" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.6855745488972" y="147.87546279337585" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T04</text>
+<path d="M701.2873205804649,230.07962662551486 Q373.3144254511028,156.12453720662415 265.3415303217407,82.16944778773345" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.3144254511028" y="156.12453720662415" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T05</text>
+<path d="M200.0,312.0 L200.0,371.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="335.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T06</text>
+<path d="M258.7126794195351,269.9203733744851 L694.6584696782593,417.8305522122665" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.6855745488972" y="337.87546279337585" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T07</text>
+<path d="M698.0,440.0 Q373.5,440.0 269.0,440.0" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.5" y="440.0" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T08</text>
+<path d="M259.02577079968637,458.9725691856135 L694.3100292713168,598.8853665514947" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.6679000355016" y="522.9289678685541" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T09</text>
+<path d="M200.0,502.0 L200.0,581.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="535.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T10</text>
+<path d="M260.83742687230745,661.9502088499175 L692.293831384045,746.700574021866" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5656291281762" y="698.3253914358918" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T11</text>
+<path d="M699.3762503272006,772.9908035013142 Q373.422308449271,819.266648189442 267.4683665713413,865.5424928775698" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.422308449271" y="819.266648189442" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T12</text>
+<path d="M200.0,712.0 L200.0,811.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="755.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T13</text>
+<path d="M261.5212283562474,887.690153544531 L691.5328265067569,941.4416033133447" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5270274315021" y="908.5658784289378" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T14</text>
+<path d="M200.0,942.0 L200.0,1021.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="975.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T15</text>
+<path d="M261.5212283562474,1097.6901535445309 L691.5328265067569,1151.4416033133446" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="484.5270274315021" y="1118.5658784289376" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T16</text>
+<path d="M699.8511649909894,1175.0372087522526 Q373.39549875050864,1229.1511253123726 266.9398325100279,1283.265041872493" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="363.39549875050864" y="1229.1511253123726" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T17</text>
+<path d="M200.0,1152.0 L200.0,1231.0" stroke="#333" fill="none" marker-end="url(#a)"/>
+<text x="208.0" y="1185.5" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T18</text>
+<path d="M138,440 C50,440 50,60 138,60" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="72" y="250.0" font-size="12" font-weight="bold" text-anchor="end" fill="#0958d9">T21</text>
+<path d="M220,598 C320,610 320,690 220,702" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="312" y="654" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T19</text>
+<path d="M220,598 C350,580 350,720 220,702" stroke="#555" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+<text x="342" y="654" font-size="12" font-weight="bold" text-anchor="start" fill="#0958d9">T20</text>
+<circle cx="200" cy="60" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="50" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S0</text>
+<text x="200" y="64" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Idle</text>
+<text x="200" y="78" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">(page open)</text>
+<circle cx="760" cy="60" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="50" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E1</text>
+<text x="760" y="64" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Brand list</text>
+<text x="760" y="78" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">error</text>
+<circle cx="200" cy="250" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="240" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S1</text>
+<text x="200" y="254" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Outlets</text>
+<text x="200" y="268" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">loaded</text>
+<circle cx="760" cy="250" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="240" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E2</text>
+<text x="760" y="254" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">No outlets</text>
+<text x="760" y="268" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">under brand</text>
+<circle cx="200" cy="440" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="430" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S2</text>
+<text x="200" y="444" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Valid input</text>
+<text x="200" y="458" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">entered</text>
+<circle cx="760" cy="440" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="430" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E3</text>
+<text x="760" y="444" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Validation</text>
+<text x="760" y="458" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">error</text>
+<circle cx="200" cy="650" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="640" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S3</text>
+<text x="200" y="654" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Submitting</text>
+<text x="200" y="668" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">(quotation)</text>
+<circle cx="760" cy="620" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="610" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E4</text>
+<text x="760" y="624" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Billing email</text>
+<text x="760" y="638" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">missing</text>
+<circle cx="760" cy="760" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="750" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E5</text>
+<text x="760" y="764" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Quotation</text>
+<text x="760" y="778" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">failed</text>
+<circle cx="200" cy="880" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="870" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S4</text>
+<text x="200" y="884" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Quotation</text>
+<text x="200" y="898" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">created</text>
+<circle cx="760" cy="950" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="940" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E6</text>
+<text x="760" y="954" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Credit write</text>
+<text x="760" y="968" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">failed</text>
+<circle cx="200" cy="1090" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="1080" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S5</text>
+<text x="200" y="1094" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Credits</text>
+<text x="200" y="1108" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">committed</text>
+<circle cx="760" cy="1160" r="62" fill="#fff1f0" stroke="#cf1322" stroke-width="1.2"/>
+<text x="760" y="1150" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">E7</text>
+<text x="760" y="1164" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Email</text>
+<text x="760" y="1178" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">failed</text>
+<circle cx="200" cy="1300" r="62" fill="#e6f4ff" stroke="#0958d9" stroke-width="1.6"/>
+<text x="200" y="1297" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">S6</text>
+<text x="200" y="1311" font-size="10.5" font-weight="normal" text-anchor="middle" fill="#111">Complete</text>
+</svg>
