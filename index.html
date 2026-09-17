@@ -4,15 +4,16 @@
 @page{size:A4;margin:13mm}
 body{font:14px/1.55 Helvetica,Arial,sans-serif;color:#111;background:#fafafa;margin:0}
 .wrap{max-width:1040px;margin:0 auto;padding:28px 22px 60px;background:#fff}
-h1{font-size:21px;margin:0 0 2px} h2{font-size:15px;margin:22px 0 7px;border-bottom:1px solid #ccc;padding-bottom:3px}
-.sub{color:#555;margin-bottom:12px}
+h1{font-size:20px;margin:0 0 3px;font-weight:bold} h2{font-size:14.5px;margin:24px 0 8px;font-weight:bold}
+.sub{color:#444;margin-bottom:18px;font-size:12.5px}
 table{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
-th,td{border:1px solid #bbb;padding:4px 6px;vertical-align:top;text-align:left;word-wrap:break-word}
-th{background:#f0f0f0} ul{margin:4px 0 4px 17px;padding:0} li{margin-bottom:4px}
+th,td{border:1px solid #999;padding:5px 7px;vertical-align:top;text-align:left;word-wrap:break-word}
+th{background:#f5f5f5;font-weight:bold} ul{margin:4px 0 4px 17px;padding:0} li{margin-bottom:4px}
 svg{width:100%;height:auto;display:block;margin:6px auto}
-.note{background:#f6ffed;border-left:3px solid #389e0d;padding:7px 10px;margin:8px 0;font-size:12.5px}
+.note{margin:8px 0 0;font-size:12.5px}
+.cov{font-size:11.5px;color:#333;margin:4px 0 0}
 @media print{body{font-size:11px;background:#fff}.wrap{max-width:none;padding:0}table{font-size:9px}
-.page{page-break-before:always} svg.tall{height:238mm;width:auto}}
+.page{page-break-before:always}h2{page-break-after:avoid}svg{max-height:212mm;width:auto;margin:4px auto}}
 @media screen{.page{display:none}}
 </style></head><body><div class="wrap">
 <h1>Quality Assurance Engineering Intern &ndash; Assessment</h1>
@@ -153,9 +154,9 @@ svg{width:100%;height:auto;display:block;margin:6px auto}
 <tr><td><b>T19</b></td><td>S3</td><td>Second submit (double click)</td><td>Blocked by idempotency key; no duplicate quotation or credits</td><td><b>S3</b></td></tr>
 <tr><td><b>T20</b></td><td>S3</td><td>Session expires mid-submission</td><td>Re-authentication prompt; flow resumes once, single credit</td><td><b>S3</b></td></tr>
 <tr><td><b>T21</b></td><td>S2</td><td>Cancel or navigate away</td><td>All input discarded; no quotation, no credits, no audit entry</td><td><b>S0</b></td></tr></table>
-<div class="note"><b>Coverage:</b> every transition above is exercised by exactly one test case, and no transition is tested twice. T07 is a single transition triggered by six different invalid inputs, so it is written as one data-driven case (TC-07) rather than six near-identical cases.<br>T01&rarr;TC-01 T02&rarr;TC-02 T03&rarr;TC-03 T04&rarr;TC-04 T05&rarr;TC-05 T06&rarr;TC-06 T07&rarr;TC-07 T08&rarr;TC-08 T09&rarr;TC-09 T10&rarr;TC-10 T11&rarr;TC-11 T12&rarr;TC-12 T13&rarr;TC-13 T14&rarr;TC-14 T15&rarr;TC-15 T16&rarr;TC-16 T17&rarr;TC-17 T18&rarr;TC-18 T19&rarr;TC-19 T20&rarr;TC-20 T21&rarr;TC-21</div>
+<p class="note">Every transition listed above is covered by exactly one test case, and no transition is tested twice. T07 is a single transition reached by six different invalid inputs, so it is written as one data-driven test case (TC-07) rather than six near-identical ones.</p>
+<p class="cov">Transition to test case: T01&nbsp;&ndash;&nbsp;TC-01, T02&nbsp;&ndash;&nbsp;TC-02, T03&nbsp;&ndash;&nbsp;TC-03, T04&nbsp;&ndash;&nbsp;TC-04, T05&nbsp;&ndash;&nbsp;TC-05, T06&nbsp;&ndash;&nbsp;TC-06, T07&nbsp;&ndash;&nbsp;TC-07, T08&nbsp;&ndash;&nbsp;TC-08, T09&nbsp;&ndash;&nbsp;TC-09, T10&nbsp;&ndash;&nbsp;TC-10, T11&nbsp;&ndash;&nbsp;TC-11, T12&nbsp;&ndash;&nbsp;TC-12, T13&nbsp;&ndash;&nbsp;TC-13, T14&nbsp;&ndash;&nbsp;TC-14, T15&nbsp;&ndash;&nbsp;TC-15, T16&nbsp;&ndash;&nbsp;TC-16, T17&nbsp;&ndash;&nbsp;TC-17, T18&nbsp;&ndash;&nbsp;TC-18, T19&nbsp;&ndash;&nbsp;TC-19, T20&nbsp;&ndash;&nbsp;TC-20, T21&nbsp;&ndash;&nbsp;TC-21. Business rules R1&nbsp;&ndash;&nbsp;R6 are covered by TC-22 to TC-27.</p>
 
-<div class="page"></div>
 <h2>4. Business rules (traceability)</h2>
 <table><tr><th style="width:40px">ID</th><th>Rule</th></tr><tr><td>R1</td><td>SMS credits are charged and credited to the company (billing entity), never to the brand as a whole</td></tr>
 <tr><td>R2</td><td>A single submission may cover outlets belonging to different companies</td></tr>
@@ -164,6 +165,7 @@ svg{width:100%;height:auto;display:block;margin:6px auto}
 <tr><td>R5</td><td>A top-up increments the existing balance rather than replacing it</td></tr>
 <tr><td>R6</td><td>Every successful top-up is recorded in the audit log</td></tr></table>
 
+<div class="page"></div>
 <h2>5. Flowchart (including error handling and messages)</h2>
 <div><svg class="tall" viewBox="0 0 1320 1690" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">
 <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#000"/></marker></defs>
