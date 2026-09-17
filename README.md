@@ -11,8 +11,9 @@ Assessment submission for the Quality Assurance Engineering Intern role at Simpl
 |---|---|
 | `index.html` | Full submission: assumptions, state transition model, transition table, flowchart with error handling, test cases |
 | `Aziz-Ghaus-QA-Assessment.pdf` | Same document as a PDF |
-| `state.svg` / `state.py` | State transition diagram and the script that generates it |
-| `flow.svg` / `flow.py` | Process flowchart and the script that generates it |
+| `State-transition-diagram.png`, `state.svg` | State transition diagram |
+| `Flowchart.png`, `flow.svg` | Process flowchart with error handling |
+| `diagrams.py` | Script that generates both diagrams |
 
 ## Summary
 
